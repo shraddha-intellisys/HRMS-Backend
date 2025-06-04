@@ -5,7 +5,12 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     password: String,
     empID: String,
-    userID: String
+    userID: String,
+    role: {
+    type: String,
+    enum: ['admin', 'user'],
+    default: 'user' // default role is 'user'
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

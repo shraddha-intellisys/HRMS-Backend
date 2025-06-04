@@ -33,4 +33,9 @@ router.get('/', authMiddleware, employeeController.getAllEmployees);
 // ✅ Get Profile of Logged-in Employee (Protected)
 router.get('/profile', authMiddleware, employeeController.getEmployeeProfile);
 
+router.put('/:id', async (req, res) => {
+  const updated = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
+});
+
 module.exports = router;

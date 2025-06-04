@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const leaveSchema = new mongoose.Schema({
+  employeeName: { type: String, required: true },  
+  employeeCode: { type: String, required: true }, 
   applicationDate: { type: Date, required: true },
   applicationType: { type: String, required: true },
   leaveType: { type: String, required: true },
@@ -13,7 +15,12 @@ const leaveSchema = new mongoose.Schema({
   firstHalfTo: { type: Boolean, default: false },
   reason: { type: String, required: true },
   remarks: { type: String },
-  ccTo: { type: String }
+  ccTo: { type: String },
+  status: {
+    type: String,
+    enum: ['Pending', 'Approved', 'Rejected'],
+    default: 'Pending'
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Leave', leaveSchema);

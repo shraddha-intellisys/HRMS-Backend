@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+// etc.
+
+
+
 // ✅ Import Routes
 const authRoutes = require('./routes/auth.Routes');
 const employeeRoutes = require('./routes/employee');
@@ -12,6 +16,9 @@ const attendanceApplicationRoutes = require('./routes/attendanceApplicationRoute
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const leaveRoutes = require('./routes/leaveRoutes');
 const holidayRoutes = require('./routes/holidayRoutes');
+const resignationRoutes = require('./routes/resignationRoutes');
+const Resignation = require('./models/Resignation');
+const adminRoutes = require('./routes/adminRoutes.js');
 
 
 
@@ -39,6 +46,8 @@ app.use('/api', attendanceApplicationRoutes);
 app.use('/api', attendanceRoutes);
 app.use('/api/leave', leaveRoutes);
 app.use('/api/holidays', holidayRoutes);
+app.use('/api/resignation', resignationRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 
@@ -49,6 +58,7 @@ mongoose.connect(DB_URI, {
   connectTimeoutMS: 30000,
 });
 
+
 mongoose.connection.on('connected', () => console.log('✅ MongoDB connected successfully'));
 mongoose.connection.on('error', (err) => {
   console.error('❌ MongoDB connection error:', err);
@@ -57,9 +67,19 @@ mongoose.connection.on('error', (err) => {
 mongoose.connection.on('disconnected', () => console.log('⚠️ MongoDB disconnected'));
 
 // ✅ Test API Route
-app.get('/api/test', (req, res) => {
-  res.json({ message: '🚀 API is working properly!' });
+app.post('/api/resignation/submit', async (req, res) => {
+  try {
+    const resignation = new Resignation(req.body);
+    await resignation.save();
+    res.status(200).json({ message: 'Resignation submitted successfully' });
+  } catch (error) {
+    console.error('❌ Error saving resignation:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
+
+
+
 
 // ✅ Debug: Create User Manually (if needed)
 app.post('/api/employees/create', async (req, res) => {
@@ -101,6 +121,8 @@ app.get('/api/employees/profile/:employeeId', async (req, res) => {
     res.status(500).json({ success: false, message: '❌ Internal server error', error: error.message });
   }
 });
+
+
 
 // ✅ Global Error Handler
 app.use((err, req, res, next) => {

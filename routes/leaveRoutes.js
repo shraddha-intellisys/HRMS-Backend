@@ -3,15 +3,27 @@ const router = express.Router();
 const { submitLeave } = require('../controllers/leaveController');
 const Leave = require('../models/Leave');
 
-router.post('/submit', submitLeave);
+router.post('/submit', async (req, res) => {
+  const leave = new Leave(req.body);
+  await leave.save();
+  res.send({ message: 'Leave submitted' });
+});
 // routes/leaveRoutes.js
 router.get('/all', async (req, res) => {
-  try {
-    const leaves = await Leave.find(); // not LeaveModel
-    res.json(leaves);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err });
-  }
+  const leaves = await Leave.find();
+  res.send(leaves);
+
+
+  // PATCH /api/leave/approve/:id
+router.patch('/approve/:id', async (req, res) => {
+  await Leave.findByIdAndUpdate(req.params.id, { status: 'Approved' });
+  res.send({ message: 'Leave approved' });
+});
+router.patch('/reject/:id', async (req, res) => {
+  await Leave.findByIdAndUpdate(req.params.id, { status: 'Rejected' });
+  res.send({ message: 'Leave rejected' });
+});
+
 });
 
 

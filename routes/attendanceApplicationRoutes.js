@@ -7,8 +7,8 @@ const attendanceController = require('../controllers/attendanceApplicationContro
 const controller = require('../controllers/attendanceApplicationController');
 
 
-router.post('/attendance-application', submitAttendance);        // For Submit
-router.post('/cancel', attendanceController.cancelApplication);            // For Cancel
+router.post('/attendance-application', submitAttendance);        
+router.post('/cancel', attendanceController.cancelApplication);            
 router.get('/pbm', controller.getPBMAttendance);
 
 module.exports = router;
